@@ -176,16 +176,43 @@ $(document).ready(function () {
 <p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJbmNsdWRlIHRoZSBwZGZ0b29scyBsaWJyYXJ5IHRvIHRyYW5zZmVyIGRhdGEgZnJvbSBwZGYgdG8gdGV4dCwgYW5kIHRoZW4gdG8gY3N2XG5saWJyYXJ5KHBkZnRvb2xzKVxuXG4jIERvd25sb2FkIHBkZiB3aXRoIGRhdGE6XG5kb3dubG9hZC5maWxlKFwiaHR0cHM6Ly93d3cudXRpbWNvLm9yZy9GdW5kcy9FbmRvd21lbnQvUFVGL1BVRjIwMTZEZXRhaWxlZEludmVzdG1lbnRzLnBkZlwiLCBcInB1ZkludmVzdG1lbnRzMjAxNi5wZGZcIiwgbW9kZSA9IFwid2JcIilcbmBgYCJ9 -->
+<pre class="r"><code># Include the pdftools library to transfer data from pdf to text, and then to csv
+library(pdftools)
+
+# Download pdf with data:
+download.file(&quot;https://www.utimco.org/Funds/Endowment/PUF/PUF2016DetailedInvestments.pdf&quot;, &quot;pufInvestments2016.pdf&quot;, mode = &quot;wb&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Cmd+Option+I</em>.</p>
 <p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUcmFuc2ZlciBwZGYgZGF0YSBpbnRvIHRleHQgZm9ybWF0OlxudHh0IDwtIHBkZl90ZXh0KFwicHVmSW52ZXN0bWVudHMyMDE2LnBkZlwiKVxuI2hlYWQoc3Ryc3BsaXQodHh0W1sgMyBdXSwgXCJcXG5cIikpXG5saWJyYXJ5KHJlYWRyKVxubGlicmFyeShzdHJpbmdyKVxubGlicmFyeShtYWdyaXR0cilcbmxpYnJhcnkoZHBseXIpXG50YWJsZV9kYXRhIDwtIHR4dCBbWyAzIF1dICU+JVxuICBzdHJfc3BsaXQocGF0dGVybiA9IFwiXFxuXCIpICU+JVxuICB1bmxpc3QoKSAlPiVcbiAgc3RyX3N1YnNldChwYXR0ZXJuID0gXCIqKFxcXFwuKXs1fVwiKSAlPiVcbiAgc3RyX2MoY29sbGFwc2UgPSBcIlxcblwiKSAlPiVcbiAgcmVhZF90YWJsZShjb2xfbmFtZXMgPSBGQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code># Transfer pdf data into text format:
+txt &lt;- pdf_text(&quot;pufInvestments2016.pdf&quot;)
+#head(strsplit(txt[[ 3 ]], &quot;\n&quot;))
+library(readr)
+library(stringr)
+library(magrittr)
+library(dplyr)
+table_data &lt;- txt [[ 3 ]] %&gt;%
+  str_split(pattern = &quot;\n&quot;) %&gt;%
+  unlist() %&gt;%
+  str_subset(pattern = &quot;*(\\.){5}&quot;) %&gt;%
+  str_c(collapse = &quot;\n&quot;) %&gt;%
+  read_table(col_names = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gc3RyaV9zdWJzZXRfcmVnZXgoc3RyaW5nLCBwYXR0ZXJuLCBvbWl0X25hID0gVFJVRSwgb3B0c19yZWdleCA9IG9wdHMocGF0dGVybikpIDogXG4gIFN5bnRheCBlcnJvciBpbiByZWdleHAgcGF0dGVybi4gKFVfUkVHRVhfUlVMRV9TWU5UQVgpXG4ifQ== -->
+<pre><code>Error in stri_subset_regex(string, pattern, omit_na = TRUE, opts_regex = opts(pattern)) : 
+  Syntax error in regexp pattern. (U_REGEX_RULE_SYNTAX)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUFVGIEludmVzdG1lbnQgUG9ydGZvbGlvIFZpc3VhbGl6YXRpb24iCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KClRoaXMgaXMgYW4gW1IgTWFya2Rvd25dKGh0dHA6Ly9ybWFya2Rvd24ucnN0dWRpby5jb20pIE5vdGVib29rLiBXaGVuIHlvdSBleGVjdXRlIGNvZGUgd2l0aGluIHRoZSBub3RlYm9vaywgdGhlIHJlc3VsdHMgYXBwZWFyIGJlbmVhdGggdGhlIGNvZGUuIAoKVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIAoKYGBge3J9CnBsb3QoY2FycykKYGBgCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ21kK09wdGlvbitJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ21kK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUFVGIEludmVzdG1lbnQgUG9ydGZvbGlvIFZpc3VhbGl6YXRpb24iCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KClRoaXMgaXMgYW4gW1IgTWFya2Rvd25dKGh0dHA6Ly9ybWFya2Rvd24ucnN0dWRpby5jb20pIE5vdGVib29rLiBXaGVuIHlvdSBleGVjdXRlIGNvZGUgd2l0aGluIHRoZSBub3RlYm9vaywgdGhlIHJlc3VsdHMgYXBwZWFyIGJlbmVhdGggdGhlIGNvZGUuIAoKVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIAoKYGBge3J9CiMgSW5jbHVkZSB0aGUgcGRmdG9vbHMgbGlicmFyeSB0byB0cmFuc2ZlciBkYXRhIGZyb20gcGRmIHRvIHRleHQsIGFuZCB0aGVuIHRvIGNzdgpsaWJyYXJ5KHBkZnRvb2xzKQoKIyBEb3dubG9hZCBwZGYgd2l0aCBkYXRhOgpkb3dubG9hZC5maWxlKCJodHRwczovL3d3dy51dGltY28ub3JnL0Z1bmRzL0VuZG93bWVudC9QVUYvUFVGMjAxNkRldGFpbGVkSW52ZXN0bWVudHMucGRmIiwgInB1ZkludmVzdG1lbnRzMjAxNi5wZGYiLCBtb2RlID0gIndiIikKYGBgCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ21kK09wdGlvbitJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ21kK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuCgpgYGB7cn0KIyBUcmFuc2ZlciBwZGYgZGF0YSBpbnRvIHRleHQgZm9ybWF0Ogp0eHQgPC0gcGRmX3RleHQoInB1ZkludmVzdG1lbnRzMjAxNi5wZGYiKQoKI2hlYWQoc3Ryc3BsaXQodHh0W1sgMyBdXSwgIlxuIikpCgpsaWJyYXJ5KHJlYWRyKQpsaWJyYXJ5KHN0cmluZ3IpCmxpYnJhcnkobWFncml0dHIpCmxpYnJhcnkoZHBseXIpCgp0YWJsZV9kYXRhIDwtIHR4dCBbWyAzIF1dICU+JQogIHN0cl9zcGxpdChwYXR0ZXJuID0gIlxuIikgJT4lCiAgdW5saXN0KCkgJT4lCiAgc3RyX3N1YnNldChwYXR0ZXJuID0gIl5bXi4uLl0uKihcXC4pezV9IikgJT4lCiAgc3RyX2MoY29sbGFwc2UgPSAiXG4iKSAlPiUKICByZWFkX3RhYmxlKGNvbF9uYW1lcyA9IEZBTFNFKQoKdGFibGVfZGF0YQoKCgoKIyBTYXZlIG5ldyBvYmplY3QgYXMgYSB0eHQgZmlsZToKIyBzYXZlKHR4dCwgZmlsZT0icHVmSW52ZXN0bWVudHMyMDE2LnR4dCIpCiMgRXF1aXR5IFNlY3VyaXRpZXMgYXJlIHR4dFszXSB0byB0eHRbMzJdLCB0cmFuc2ZlciB0aGVzZSBwYWdlcyB0byBhIGNzdgojIGRmIDwtIHJlYWQudGFibGUoInB1ZkludmVzdG1lbnRzMjAxNi50eHQiLCBza2lwPTIsIG5yb3dzPTI5LCBoZWFkZXI9RkFMU0UsIGJsYW5rLmxpbmVzLnNraXAgPSBUUlVFKQojIGRmCmBgYAoK</div>
 
 
 
