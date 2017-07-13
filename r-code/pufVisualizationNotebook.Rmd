@@ -3,9 +3,7 @@ title: "PUF Investment Portfolio Visualization"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+In this R Notebook, we will visualize the investment portfolio of the University of Texas' endowment: the Permanent University Fund. The portfolio is in PDF format, so first we need to transfer the data from a .pdf file to a .txt file.
 
 ```{r}
 # Include the pdftools library to transfer data from pdf to text, and then to csv
@@ -13,39 +11,37 @@ library(pdftools)
 
 # Download pdf with data:
 download.file("https://www.utimco.org/Funds/Endowment/PUF/PUF2016DetailedInvestments.pdf", "pufInvestments2016.pdf", mode = "wb")
-```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
-
-```{r}
 # Transfer pdf data into text format:
 txt <- pdf_text("pufInvestments2016.pdf")
+```
 
-#head(strsplit(txt[[ 3 ]], "\n"))
+Next, we will read the text object into a table so we can visualize it with ggplot2 and plotly.
 
+```{r}
 library(readr)
 library(stringr)
 library(magrittr)
 library(dplyr)
 
-table_data <- txt [[ 3 ]] %>%
+table_data <- txt [[ 3 ]] %>% 
   str_split(pattern = "\n") %>%
   unlist() %>%
   str_subset(pattern = "^[^...].*(\\.){5}") %>%
   str_c(collapse = "\n") %>%
-  read_table(col_names = FALSE)
+  read_table(col_names = FALSE) %>%
+  mutate(X1 = str_replace_all(X1, "(\\.)*", "")) %>%
 
 table_data
+```
+Finally, we will plot the data ussing ggplot2 and plotly
 
+```{r}
+library(ggplot2)
+library(plotly)
+p <- ggplot(mutate(table_data), aes(x = X1, y = X2)) +
+  geom_point(shape=1)
 
-
-
-# Save new object as a txt file:
-# save(txt, file="pufInvestments2016.txt")
-# Equity Securities are txt[3] to txt[32], transfer these pages to a csv
-# df <- read.table("pufInvestments2016.txt", skip=2, nrows=29, header=FALSE, blank.lines.skip = TRUE)
-# df
+ggplotly(p)
 ```
 
